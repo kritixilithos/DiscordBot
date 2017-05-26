@@ -11,10 +11,11 @@ let botName;
 
 var channel = null;
 
-let calc = require("./calc.js");
-let die  = require("./die.js");
-let help = require("./help.js");
-let say  = require("./say.js");
+let calc     = require("./calc.js");
+let blockify = require("./blockify.js");
+let die      = require("./die.js");
+let help     = require("./help.js");
+let say      = require("./say.js");
 
 client.on("ready", () => {
 	console.log("Started.");
@@ -45,6 +46,9 @@ function YeeBot(message) {
 	switch(command) {
 		case "calc":
 			msg = calc.calc(args);
+			break;
+		case "blockify":
+			msg = blockify.blockify(args);
 			break;
 		case "die":
 			die.die();
