@@ -2,6 +2,6 @@
 
 module.exports = {
 	say(message) {
-		return message;
+		return new Promise((r,R) => r(message));
 	}
 }

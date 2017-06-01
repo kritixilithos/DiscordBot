@@ -13,12 +13,12 @@ var CalculatorMain = new Calculator();
 module.exports = {
 	calc(expression) {
 		console.log(CalculatorMain.ans);
-		return CalculatorMain.calculate(expression);
+		return new Promise((r,R) => r(CalculatorMain.calculate(expression)));
 	}
 }
 
-function Lexer(expression) {
-	this.tokens = [];
-	this.lex = function() {
+class Lexer {
+	constructor(expression) {
+		this.expression = expression;
 	}
 }
