@@ -14,7 +14,7 @@ Commands:
 	pause             prevent the bot from sending any messages for 10
 	                  seconds
 	say [args]        make the bot say [args] as a text message
-	update            update the list of bad words
+	restart           restart the bot
 	[default]         display this help screen
 \`\`\``));
 	}

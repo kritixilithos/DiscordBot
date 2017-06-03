@@ -1,0 +1,23 @@
+#!/bin/bash
+
+a() {
+	lastLine=""
+
+	#reads lines from the output of bot.js
+	while read line;
+	do
+		lastLine="$line"
+		echo "$lastLine"
+	done < <(node bot.js)
+
+	# Restart the bot if the last output was "restart"
+	if [[ "$lastLine" == "restart" ]]; then
+		echo "Restarted."
+		a
+	else
+		# Otherwise kill it
+		exit
+	fi
+}
+
+a

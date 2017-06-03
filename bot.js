@@ -17,6 +17,7 @@ let blockify = require("./blockify.js");
 let define   = require("./define.js");
 let die      = require("./die.js");
 let help     = require("./help.js");
+let restart  = require("./restart.js");
 let say      = require("./say.js");
 
 var sleep = false;
@@ -26,28 +27,8 @@ client.on("ready", () => {
 	clientUser = client.user;
 	botName = clientUser.username;
 	clientUser.setGame("in BotTown");
-	update();
-});
 
-client.on("message", message => {
-	console.log("Recieved: " + message.cleanContent);
-
-	var channel = message.channel;
-
-	//bot is called by @BotName or by .
-	if (!sleep) {
-		/*if(badWordsRegExp.test(message.cleanContent) && message.author !== clientUser) {
-			message.reply("Watch your profanity, *tsk* *tsk* *tsk*");
-		} else if(/follow/ig.test(message.cleanContent)) {
-			message.reply("No.");
-		} else*/ if(message.cleanContent.startsWith("@"+botName) || message.cleanContent.startsWith(".")) {
-			var msg = message.cleanContent.split(/^@\w+ *|\./)[1];
-			YeeBot(channel, msg);
-		}
-	}
-});
-
-function update() {
+	//updating the list of bad words
 	var badWords = [];
 
 	for(var badWordRaw of badWordsRaw) {
@@ -60,7 +41,26 @@ function update() {
 	}
 
 	badWordsRegExp = new RegExp(badWords.join("|"), "i");
-}
+});
+
+client.on("message", message => {
+	console.log("Recieved: " + message.cleanContent);
+
+	var channel = message.channel;
+
+	//the sleep check is for the pause command
+	if (!sleep) {
+		/*if(badWordsRegExp.test(message.cleanContent) && message.author !== clientUser) {
+			message.reply("Watch your profanity, *tsk* *tsk* *tsk*");
+		} else if(/follow/ig.test(message.cleanContent)) {
+			message.reply("No.");
+		} else*/ if(message.cleanContent.startsWith("@"+botName) || message.cleanContent.startsWith(".")) {
+			//bot can be called with "@[botName]" or "."
+			var msg = message.cleanContent.split(/^@\w+ *|\./)[1];
+			YeeBot(channel, msg);
+		}
+	}
+});
 
 // bot code
 function YeeBot(channel, message) {
@@ -85,18 +85,20 @@ function YeeBot(channel, message) {
 			break;
 		case "pause":
 			sleep = true;
+			//sleep for 10 seconds. TODO: add an optional parameter that controls the sleep time
 			setTimeout(a=>sleep=false,10e3);
+			break;
+		case "restart":
+			restart.restart();
 			break;
 		case "say":
 			msg = say.say(args);
-			break;
-		case "update":
-			update();
 			break;
 		default:
 			msg = help.help(botName);
 	}
 
+	//sending the message using Promises
 	if(msg !== null) {
 		msg.then((a) => (typeof(a)==="object")?channel.sendEmbed(a):channel.send(a), (e) => (typeof(e)==="object")?channel.sendEmbed(e):channel.send(e));
 	}
